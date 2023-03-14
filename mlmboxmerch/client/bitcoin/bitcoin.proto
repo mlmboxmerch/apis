@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package mlmboxmerch.client.bitcoin;
+
+import "mlmboxmerch/type/block.proto";
+
+option go_package = "github.com/mlmboxmerch/go-genproto/mlmboxmerch/client/bitcoin;service_client_bitcoin_pb";
+
+service Bitcoin {
+  rpc DepositAddress (DepositAddressRequest) returns (DepositAddressResponse) {}
+  rpc ValidateAddress (ValidateAddressRequest) returns (ValidateAddressResponse) {}
+
+  rpc DepositTransactionList (TransactionListRequest) returns (DepositTransactionListResponse) {}
+  rpc WithdrawalTransactionList (TransactionListRequest) returns (WithdrawalTransactionListResponse) {}
+  rpc WithdrawalCreate (WithdrawalCreateRequest) returns (Error) {}
+}
+
+message Error {
+  enum ID {
+    OK = 0;
+    UNAVAILABLE = 1;
+    WRONG_ACCOUNT_ID = 2;
+    WRONG_WITHDRAWAL_ID = 3;
+    WRONG_WITHDRAWAL_ADDRESS = 4;
+    WRONG_WITHDRAWAL_AMOUNT = 5;
+    WRONG_WITHDRAWAL_EXISTS = 6;
+  }
+  ID error_id = 1;
+}
+message DepositAddressRequest {
+  uint32 account_id = 1;
+}
+message DepositAddressResponse {
+  Error.ID error_id = 1;
+  string address = 2;
+}
+message ValidateAddressRequest {
+  string address = 1;
+}
+message ValidateAddressResponse {
+  Error.ID error_id = 1;
+  string address = 2;
+  bool validated = 3;
+}
+
+message TransactionListRequest {
+  uint32 last_modification_id = 1;
+  uint32 limit = 2;
+}
+
+message DepositTransactionListResponse {
+  Error.ID error_id = 1;
+  uint64 block_height = 2; // порядковый номер блока
+  repeated mlmboxmerch.type.BlockUpdateRequest.DepositTransaction transactions = 3;
+}
+message WithdrawalTransactionListResponse {
+  Error.ID error_id = 1;
+  uint64 block_height = 2; // порядковый номер блока
+  repeated mlmboxmerch.type.BlockUpdateRequest.WithdrawalTransaction transactions = 3;
+}
+message WithdrawalCreateRequest {
+  uint32 withdrawal_id = 1;
+  string address = 2;
+  string value_formatted = 3;
+}

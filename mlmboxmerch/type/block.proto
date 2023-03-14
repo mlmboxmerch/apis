@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package mlmboxmerch.type;
+
+option go_package = "github.com/mlmboxmerch/go-genproto/mlmboxmerch/type/block;block_pb";
+
+message BlockUpdateRequest {
+  message DepositTransaction {
+    uint32 modification_id = 1; // идентификатор изменения (актуальным состоянием, является наибольшее значение)
+    uint64 block_height = 2; // порядковый номер блока
+    string transaction_hash = 3; // хэш транзакции
+    uint32 transaction_index = 4; // индекс для уникальной транзакции
+    string contract_address = 5; // адрес контракта
+    uint32 contract_index = 6; // индекс для уникальной транзакции
+    uint32 account_id = 7; // идентификатор пользователя
+    string amount = 8; // сумма
+    bool success = 9; // результат успешной транзакции
+    bool main_chain = 10; // результат нахождения транзакции в основной цепи
+  }
+  message WithdrawalTransaction {
+    uint32 modification_id = 1; // идентификатор изменения (актуальным состоянием, является наибольшее значение)
+    uint32 withdrawal_id = 2; // идентификатор заявки на вывод
+    string address = 3; // адрес получателя
+    string amount = 4; // сумма
+    string transaction_hash = 5; // хэш транзакции
+    uint32 transaction_index = 6; // индекс для уникальной транзакции
+    string contract_address = 7; // адрес контракта
+    uint32 contract_index = 8; // индекс для уникальной транзакции
+    bool transaction_expired = 9; // истек срок действия транзакции
+    uint64 block_height = 10; // порядковый номер блока
+    bool success = 11; // результат успешной транзакции
+    bool main_chain = 12; // результат нахождения транзакции в основной цепи
+  }
+  uint64 block_height = 1; // порядковый номер блока
+  repeated DepositTransaction deposit_transactions = 2;
+  repeated WithdrawalTransaction withdrawal_transactions = 3;
+}
